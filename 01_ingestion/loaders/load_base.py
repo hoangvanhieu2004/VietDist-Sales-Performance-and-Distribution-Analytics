@@ -44,3 +44,4 @@ def run_loader(file_name, table_name, sheet_name=0):
                         sp='google_drive', rl=0, st='FAILED',
                         dur=round(time.time()-start,2), err=str(e)))
     print(f'Tổng cộng: {total_loaded} dòng đã load')
+    return batch_id, total_loaded

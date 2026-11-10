@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Phase 0, Task 1.1, and the Bronze loads for 9 of the 10 sources are done (all except SRC-02, which is Task 1.4); the rest is not built yet. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
+Phase 0 and Phase 1 (Bronze, all 10 sources loaded) are done; Silver and Gold are not built yet. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
 
 Tool versions: the project accepts the latest versions rather than the exact ones in the brief. This machine has Python 3.13 and PostgreSQL 18.
 
@@ -66,8 +66,8 @@ There is no build, lint, or test framework defined. Data quality tests are SQL s
 **Sales target versioning (SRC-02), the hardest part**
 - `sales_target_plan` has multiple versions per year (v1, v2, v3...), each either a separate file or a separate sheet.
 - All versions must be kept. Never overwrite an earlier version.
-- Bronze stores the data in long format with `month_col` holding `T1`..`T12`. The `TỔNG` total row and the total column are excluded.
-- Silver (`stg_sales_targets_versioned`) adds version, effective date, and an `is_latest` flag. Effective version by month: T1–T6 use v1, T7–T12 use v2. v1 and v2 both carry targets for T7–T12.
+- Bronze: `raw.sales_targets_raw` holds the rows from the `v1` and `v2` sheets as they are, already long format with a `month` column (`1`..`12`) and no total rows. `raw.sales_target_files` records one row per loaded sheet (`version_label`, `sheet_name`, `rows_loaded`). The `Summary` sheet is not loaded.
+- Silver (`stg_sales_targets_versioned`) adds version, effective date, and an `is_latest` flag. Effective version by month: T1–T6 use v1, T7–T12 use v2. v1 and v2 both carry targets for T7–T12. 8 employees appear only in v1, so a plain "T7–T12 use v2" rule would drop their second-half targets; handle this in Task 2.3.
 
 **Silver**
 - Profile first: record row counts, % null on key columns, and duplicates per table in `docs/data_issues.md`.
@@ -112,7 +112,7 @@ Confirm these with the user rather than silently picking one:
 - Metadata column is `e_source_file` in the table but `_source_file` in the checkpoint. `_source_file` looks correct.
 - Subtask 1.4.1 names `raw.sales_target_versions`, while the checkpoint uses `raw.sales_target_files` and `raw.sales_targets_raw`.
 - The folder tree lists 6 loaders, but there are 10 sources.
-- The brief describes SRC-02 with `T1`..`T12` columns and a `TỔNG` row, but its first sheet is already long format with a `month` column. Check this before Task 1.4.
+- The brief describes SRC-02 with `T1`..`T12` values in `month_col` and a `TỔNG` row, but the real sheets are long format with a `month` column and no such row. The Task 1.4 checkpoint item on `T1`..`T12` does not apply.
 - The checkpoint expects `distributor_orders` as XLSB, but the real file is `.xlsx`, and the folder has no XLSB or XLSM files.
 - The brief refers to `BRD_VietDist_Analytics_Project_v1_0.docx`, which is not in this folder.
 - `onedrive` is a valid platform and `msal` is installed, but only a Google Drive connector is specified.

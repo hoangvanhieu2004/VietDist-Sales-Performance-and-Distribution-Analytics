@@ -10,6 +10,10 @@ Tool versions: the project accepts the latest versions rather than the exact one
 
 Working agreement: work through the brief one step at a time, and get the user's approval for each step before doing it. For anything Claude does not have permission to do itself (entering passwords, Google credentials, GUI tools), give the user instructions so they can do it.
 
+Teaching mode: the user is a beginner. Build in small pieces following the order of the brief, explain each piece, and test it before moving on. Do not finish a whole phase in one go. Write basic, easy-to-read code with Vietnamese comments, and avoid advanced constructs.
+
+Secrets: never open, print, or search the contents of files in `credentials/`. Programs may load the service account file at runtime to authenticate, but must not print it.
+
 Reading the brief: `pandoc` is not installed here, and the accented filename breaks when passed inline through the shell. Locate it with `glob` from Python and read `word/document.xml` out of the zip. Many subtasks are a heading only, so their design is left to the implementer.
 
 ## What is being built
@@ -78,15 +82,36 @@ There is no build, lint, or test framework defined. Data quality tests are SQL s
 
 Assumptions made during implementation go in `docs/assumptions_log.md`.
 
+## Source files on Google Drive
+
+All 10 sources sit in one Drive folder, named `SRC<nn>_<name>.<ext>`:
+
+| Source | File | Sheets (Excel only) |
+|---|---|---|
+| SRC-01 | `sales_transactions.csv` | |
+| SRC-02 | `sales_target_plan.xlsx` | `Plan_v1_Original`, `Plan_v2_Adjustment_H2`, `Summary` |
+| SRC-03 | `customer_master.csv` | |
+| SRC-04 | `product_master.xlsx` | `Products`, `Category_Summary` |
+| SRC-05 | `distributor_orders.xlsx` | `Orders` |
+| SRC-06 | `distributor_master.csv` | |
+| SRC-07 | `employee_master.xlsx` | `Employee_v1_StartYear`, `Employee_v2_Adjustment`, `Change_Log` |
+| SRC-08 | `territory_mapping.xlsx` | `Sheet1` |
+| SRC-09 | `return_transactions.csv` | |
+| SRC-10 | `promotion_program.xlsx` | `Sheet1` |
+
+`parse_file` reads only the first sheet. The loaders for SRC-02 and SRC-07 must also read their other version sheets, since SCD2 history for employees depends on them. All four CSVs are UTF-8.
+
 ## Inconsistencies in the brief
 
 Confirm these with the user rather than silently picking one:
 
 - Metadata column is `e_source_file` in the table but `_source_file` in the checkpoint. `_source_file` looks correct.
 - Subtask 1.4.1 names `raw.sales_target_versions`, while the checkpoint uses `raw.sales_target_files` and `raw.sales_targets_raw`.
-- The folder tree lists 6 loaders, but 10 sources are required. The source list (SRC-01 to SRC-10) is not in the brief.
+- The folder tree lists 6 loaders, but there are 10 sources.
+- The brief describes SRC-02 with `T1`..`T12` columns and a `TỔNG` row, but its first sheet is already long format with a `month` column. Check this before Task 1.4.
+- The checkpoint expects `distributor_orders` as XLSB, but the real file is `.xlsx`, and the folder has no XLSB or XLSM files.
 - The brief refers to `BRD_VietDist_Analytics_Project_v1_0.docx`, which is not in this folder.
 - `onedrive` is a valid platform and `msal` is installed, but only a Google Drive connector is specified.
-- The versioning table has a v3 (October) column that adjusts nothing, so v3's effect is undefined.
+- The versioning table has a v3 (October) column, but SRC-02 currently contains only v1 and v2.
 - Both `stg_sales_transactions` and `stg_sales_transaction` appear.
 - The filename says v2.0, the cover says v1.0. Task numbering skips 1.2.

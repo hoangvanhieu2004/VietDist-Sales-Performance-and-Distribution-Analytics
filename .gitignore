@@ -1,0 +1,11 @@
+# Thong tin nhay cam
+.env
+credentials/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# File khoa tam cua Excel/Word
+~$*

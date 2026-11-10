@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-No code exists yet. The only source of truth is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). Everything below describes the system that brief specifies, not something already built. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
+Phase 0, Task 1.1, and the Bronze loads for 9 of the 10 sources are done (all except SRC-02, which is Task 1.4); the rest is not built yet. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
 
 Tool versions: the project accepts the latest versions rather than the exact ones in the brief. This machine has Python 3.13 and PostgreSQL 18.
 
@@ -99,7 +99,11 @@ All 10 sources sit in one Drive folder, named `SRC<nn>_<name>.<ext>`:
 | SRC-09 | `return_transactions.csv` | |
 | SRC-10 | `promotion_program.xlsx` | `Sheet1` |
 
-`parse_file` reads only the first sheet. The loaders for SRC-02 and SRC-07 must also read their other version sheets, since SCD2 history for employees depends on them. All four CSVs are UTF-8.
+All four CSVs are UTF-8.
+
+Loaders: `01_ingestion/loaders/load_base.py` holds `run_loader(file_name, table_name, sheet_name=0)`, adapted from the brief's sample, and each `load_*.py` calls it with its own file and table. It reads the first sheet unless `sheet_name` is given. Running a loader again appends and duplicates rows.
+
+Decisions by the user: `Category_Summary` (SRC-04) and `Change_Log` (SRC-07) are not loaded. SRC-07's v1 and v2 sheets both go into `raw.employees`, told apart by the `version` column.
 
 ## Inconsistencies in the brief
 

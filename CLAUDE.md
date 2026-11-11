@@ -12,6 +12,10 @@ Working agreement: work through the brief one step at a time, and get the user's
 
 Teaching mode: the user is a beginner. Build in small pieces following the order of the brief, explain each piece, and test it before moving on. Do not finish a whole phase in one go. Write basic, easy-to-read code with Vietnamese comments, and avoid advanced constructs.
 
+Open questions: there is no stakeholder to ask. Decide open business questions with reasonable assumptions, acting as the project coach, and record each one in `docs/assumptions_log.md` with its basis (BRD, brief, data, or choice). Work only within the current data (one year, 2024, 10 sources); never create data. When the data cannot support a requirement, skip it and add it to the Limitations section of that file.
+
+Confidential files: `BRD_VietDist_Analytics_Project_v1.0.docx` is marked internal, and neither it nor the brief `.docx` is committed.
+
 Secrets: never open, print, or search the contents of files in `credentials/`. Programs may load the service account file at runtime to authenticate, but must not print it.
 
 Reading the brief: `pandoc` is not installed here, and the accented filename breaks when passed inline through the shell. Locate it with `glob` from Python and read `word/document.xml` out of the zip. Many subtasks are a heading only, so their design is left to the implementer.
@@ -109,7 +113,7 @@ Decisions by the user: `Category_Summary` (SRC-04) and `Change_Log` (SRC-07) are
 
 ## Inconsistencies in the brief
 
-Confirm these with the user rather than silently picking one:
+These are resolved by the assumptions in `docs/assumptions_log.md`:
 
 - Metadata column is `e_source_file` in the table but `_source_file` in the checkpoint. `_source_file` looks correct.
 - Subtask 1.4.1 names `raw.sales_target_versions`, while the checkpoint uses `raw.sales_target_files` and `raw.sales_targets_raw`.

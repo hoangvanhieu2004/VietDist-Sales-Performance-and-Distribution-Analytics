@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Phase 0, Phase 1 (Bronze, all 10 sources loaded), Task 2.1 (profiling), and Task 2.2 (10 Silver tables, all tests passing) are done; Task 2.3 (target versioning) and Gold are not built yet. Profiling queries are in `02_sql_analytics/data_profiling/raw.<table>.sql`, and findings plus open business questions are in `docs/data_issues.md`; read it before building Silver. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
+Phase 0, Phase 1 (Bronze, all 10 sources loaded), and Phase 2 (profiling, 10 Silver tables, and `stg_sales_targets_versioned`, all tests passing) are done; Gold (Phase 3) is not built yet. Profiling queries are in `02_sql_analytics/data_profiling/raw.<table>.sql`, and findings plus open business questions are in `docs/data_issues.md`; read it before building Silver. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
 
 Tool versions: the project accepts the latest versions rather than the exact ones in the brief. This machine has Python 3.13 and PostgreSQL 18.
 
@@ -61,7 +61,7 @@ psql -U postgres -d vietdist_dw1 -f 02_sql_analytics/silver/stg_customers.sql
 psql -U postgres -d vietdist_dw1 -f 02_sql_analytics/silver/tests/test_stg_customers.sql
 ```
 
-Build order matters because some tests check `relationships` against other Silver tables: build `stg_sales_transactions` before `stg_return_transactions`; `stg_customers` and `stg_employees` before `stg_territory_mapping` and `stg_sales_targets`; `stg_products` before `stg_promotion_program`.
+Build order matters because some tests check `relationships` against other Silver tables: build `stg_sales_transactions` before `stg_return_transactions`; `stg_customers` and `stg_employees` before `stg_territory_mapping` and `stg_sales_targets`; `stg_products` before `stg_promotion_program`; `stg_sales_targets` and `stg_employees` before `stg_sales_targets_versioned`. Avoid `;` inside SQL comments, so the files also split cleanly when statements are run one at a time.
 
 `.env` holds `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `GOOGLE_SERVICE_ACCOUNT_JSON` (default `./credentials/gdrive_service_account.json`). Both `.env` and `credentials/` must be in `.gitignore`.
 
@@ -78,7 +78,7 @@ Build order matters because some tests check `relationships` against other Silve
 - `sales_target_plan` has multiple versions per year (v1, v2, v3...), each either a separate file or a separate sheet.
 - All versions must be kept. Never overwrite an earlier version.
 - Bronze: `raw.sales_targets_raw` holds the rows from the `v1` and `v2` sheets as they are, already long format with a `month` column (`1`..`12`) and no total rows. `raw.sales_target_files` records one row per loaded sheet (`version_label`, `sheet_name`, `rows_loaded`). The `Summary` sheet is not loaded.
-- Silver (`stg_sales_targets_versioned`) adds version, effective date, and an `is_latest` flag. Effective version by month: T1–T6 use v1, T7–T12 use v2. v1 and v2 both carry targets for T7–T12. 8 employees appear only in v1; they are the 8 who resigned on 2024-07-01, so dropping their T7–T12 targets under the v2 rule is expected (confirm in Task 2.3).
+- Silver (`stg_sales_targets_versioned`) adds version, effective date, and an `is_latest` flag. Effective version by month: T1–T6 use v1, T7–T12 use v2. v1 and v2 both carry targets for T7–T12. 8 employees appear only in v1; they are the 8 who resigned (resign_date 2024-05-24 to 2024-06-18; 2024-07-01 is only the v2 snapshot date), so having no current target from July is expected. They still have 547 sales lines after their resign_date, all before July (see A-24, A-25).
 
 **Silver**
 - Profile first: record row counts, % null on key columns, and duplicates per table in `docs/data_issues.md`.

@@ -128,6 +128,10 @@ version (2), gender (2), position (4), region (3), team (10, gồm Management), 
 
 Tổng 13 thay đổi, khớp với số dòng của sheet Change_Log (không nạp). resign_date chỉ có ở các dòng Resigned, nên trạng thái và ngày nghỉ khớp nhau.
 
+**Ngày nghỉ thật khác ngày hiệu lực của v2.** 2024-07-01 chỉ là ngày hiệu lực của ảnh chụp v2. resign_date của 8 người nằm trong khoảng 2024-05-24 đến 2024-06-18 (3 người nghỉ trước 01/06: EMP1054 24/05, EMP1100 29/05, EMP1070 01/06).
+
+**Doanh số ghi sau ngày nghỉ** (phát hiện khi làm Task 2.3, đếm trên stg_sales_transactions): cả 8 người nghỉ việc vẫn có giao dịch với order_date sau resign_date. Tổng 547 dòng, net_amount 736.436.300 (0,463% tổng doanh số), tất cả nằm trong khoảng 2024-05-30 đến 2024-06-30. Không có giao dịch nào của họ từ tháng 7. Nhiều khả năng giao dịch vẫn được ghi theo người cũ cho đến khi bàn giao cùng đợt điều chỉnh 01/07.
+
 ### Vấn đề và cách xử lý ở Silver
 
 | Vấn đề | Cách xử lý |
@@ -283,5 +287,5 @@ plan_version (2), region (3), team (9).
 | Vấn đề | Cách xử lý |
 |---|---|
 | Mọi cột đang ở dạng chữ | Đổi kiểu: 3 cột ngày sang DATE, year, month, target_quantity, target_new_customers sang INTEGER, target_revenue sang NUMERIC |
-| 8 nhân viên nghỉ việc vẫn có chỉ tiêu v1 cho tháng 7 đến 12 | Quy tắc "tháng 7 đến 12 dùng v2" sẽ bỏ chỉ tiêu nửa cuối năm của họ. Điều này hợp lý vì họ đã nghỉ từ 2024-07-01, nhưng cần xác nhận ở Task 2.3 |
+| 8 nhân viên nghỉ việc vẫn có chỉ tiêu v1 cho tháng 7 đến 12 | Quy tắc "tháng 7 đến 12 dùng v2" bỏ chỉ tiêu nửa cuối năm của họ. Hợp lý vì họ đã nghỉ (resign_date từ 24/05 đến 18/06). Đã xử lý ở stg_sales_targets_versioned (Task 2.3) |
 | Area Manager không có chỉ tiêu | Đúng nghiệp vụ (cấp quản lý). Khi tính thực tế so với chỉ tiêu, Area Manager sẽ không có dòng chỉ tiêu |

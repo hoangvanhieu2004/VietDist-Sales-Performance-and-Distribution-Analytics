@@ -33,11 +33,13 @@ Cột "Căn cứ" ghi nguồn của giả định: **BRD**, **Đề bài**, **D�
 |---|---|---|
 | A-06 | Ngày bắt đầu hiệu lực của phiên bản = `effective_from`. Ngày hết hạn = ngày trước ngày bắt đầu của phiên bản kế tiếp, phiên bản cuối hết hạn 2024-12-31. Không dùng cột `effective_to` của nguồn (ghi 2024-12-31 cho cả v1) | BRD 3.2: các phiên bản có hiệu lực nối tiếp, hỗ trợ không giới hạn phiên bản |
 | A-07 | Kết quả: v1 hiệu lực 2024-01-01 đến 2024-06-30, v2 hiệu lực 2024-07-01 đến 2024-12-31 | Từ A-06 và dữ liệu |
-| A-08 | Chỉ tiêu hiện hành của (nhân viên, tháng) = phiên bản mới nhất có hiệu lực trong tháng đó và có dòng cho nhân viên đó. Đánh dấu `is_latest = TRUE` cho dòng này, các phiên bản khác giữ lại với `is_latest = FALSE` để so sánh | BRD 3.1, 3.2: so với chỉ tiêu mới nhất, vẫn so được với từng phiên bản |
-| A-09 | 8 nhân viên nghỉ việc từ 2024-07-01 không có chỉ tiêu tháng 7 đến 12. Chỉ tiêu v1 tháng 7 đến 12 của họ giữ lại (`is_latest = FALSE`) nhưng không tính vào % hoàn thành | Dữ liệu: đúng 8 người chỉ có v1 là 8 người Resigned |
+| A-08 | Phiên bản hiệu lực được xác định theo tháng cho toàn kế hoạch: là phiên bản có khoảng hiệu lực (A-06) chứa ngày đầu tháng. Dòng chỉ tiêu thuộc phiên bản đó có `is_latest = TRUE`, các phiên bản khác giữ lại với `is_latest = FALSE` để so sánh. Nhân viên không có dòng ở phiên bản hiệu lực thì không có chỉ tiêu hiện hành trong tháng đó | BRD 3.1, 3.2: so với chỉ tiêu mới nhất, vẫn so được với từng phiên bản |
+| A-09 | 8 nhân viên nghỉ việc (resign_date từ 2024-05-24 đến 2024-06-18) không có chỉ tiêu hiện hành từ tháng 7, vì v2 không có họ. Chỉ tiêu v1 tháng 7 đến 12 của họ giữ lại với `is_latest = FALSE`. Chỉ tiêu v1 tháng 6 vẫn là `is_latest = TRUE`, vì tháng 6 còn áp dụng v1 | Dữ liệu: đúng 8 người chỉ có v1 là 8 người Resigned |
 | A-10 | Area Manager (3 người) không có chỉ tiêu, không tính % hoàn thành cho họ | Dữ liệu |
 | A-11 | Chỉ tiêu phân bổ theo tháng. Khi xem theo quý, năm thì cộng các tháng | BRD OQ-08. Dữ liệu chỉ có tháng |
 | A-12 | % hoàn thành = Thực tế (A-01, A-02) / Chỉ tiêu hiện hành. Chỉ tiêu bằng 0 hoặc không có thì để trống, không chia | BRD 3.1 |
+| A-24 | % hoàn thành cá nhân chỉ tính cho tháng mà nhân viên còn làm việc vào ngày đầu tháng (chưa nghỉ, hoặc resign_date sau ngày đầu tháng). Ví dụ EMP1054 nghỉ 24/05 thì không tính tháng 6 | Lựa chọn: tránh chấm % hoàn thành cho người đã nghỉ cả tháng. Dữ liệu: 3 người nghỉ trước 01/06 vẫn có chỉ tiêu v1 tháng 6 |
+| A-25 | Doanh số ghi sau ngày nghỉ (547 dòng, 0,463% tổng doanh số, từ 30/05 đến 30/06) vẫn tính cho nhân viên ghi trên giao dịch, theo A-03, và vẫn cộng vào tổng nhóm, vùng. Gold thêm cờ `is_after_resign` để báo cáo thấy được. Theo A-24, các tháng này không tính % hoàn thành cá nhân của họ | Dữ liệu: không có giao dịch nào của họ từ tháng 7, nên nhiều khả năng là giai đoạn bàn giao |
 
 ### Nhân viên và nhà phân phối (SCD Type 2)
 

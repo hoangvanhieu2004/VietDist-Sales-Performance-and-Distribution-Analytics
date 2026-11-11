@@ -1,5 +1,6 @@
--- Xóa bảng cũ để chạy lại được nhiều lần
-DROP TABLE IF EXISTS staging.stg_distributors;
+-- Xóa bảng cũ để chạy lại được nhiều lần.
+-- CASCADE xóa luôn các view Gold phụ thuộc, nên luôn chạy lại Gold sau Silver
+DROP TABLE IF EXISTS staging.stg_distributors CASCADE;
 
 CREATE TABLE staging.stg_distributors AS
 WITH ranked AS (

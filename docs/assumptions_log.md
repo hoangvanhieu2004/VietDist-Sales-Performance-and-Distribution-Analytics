@@ -25,6 +25,7 @@ Cột "Căn cứ" ghi nguồn của giả định: **BRD**, **Đề bài**, **D�
 | A-02 | Hàng trả chỉ trừ phiếu `Đã xử lý`, tính vào kỳ theo `return_date`. Phiếu `Từ chối` không trừ. Phiếu `Đang xử lý` hiển thị riêng, chưa trừ. Doanh thu thuần = A-01 trừ `return_amount` của phiếu `Đã xử lý` | BRD 3.1: Net Revenue = Gross Revenue – Returns, "trong kỳ" |
 | A-03 | Doanh số gán cho nhân viên theo `employee_id` trên giao dịch, không theo `territory_mapping`. Phân vùng chỉ dùng cho câu hỏi "nhân viên nào phụ trách khách hàng lớn" (BR-A-03) | BRD 3.4: gắn nhân viên tại thời điểm phát sinh giao dịch. Dữ liệu: phân vùng không cập nhật sau tháng 7 |
 | A-04 | Khách hàng mới trong tháng M = khách có đơn `Delivered` đầu tiên trong dữ liệu vào tháng M. Khách quay lại = có đơn trong tháng M và đã từng có đơn trước tháng M. Khách churn = khách `Active` không có đơn trong 90 ngày tính đến ngày tham chiếu | BRD OQ-03 còn mở. Lựa chọn: 90 ngày phổ biến với FMCG |
+| A-26 | Hạng khách hàng (loyalty tier, Đề bài Task 3.1) tính từ doanh thu `Delivered` năm 2024: 20% khách cao nhất là Vàng, 30% kế tiếp là Bạc, còn lại là Đồng, khách chưa có đơn giao thành công là Chưa mua. Xếp bằng `PERCENT_RANK` trên các khách đã mua | Đề bài yêu cầu loyalty tier nhưng nguồn không có cột này. Lựa chọn: ngưỡng 20/30/50 theo nguyên tắc Pareto |
 | A-05 | Ngày tham chiếu ("hôm nay") = 2024-12-31, ngày cuối của dữ liệu. Dùng cho cảnh báo không đặt hàng 30 ngày, churn và dự báo cuối kỳ | Dữ liệu dừng ở 2024-12-31 |
 
 ### Kế hoạch bán hàng (SRC-02)

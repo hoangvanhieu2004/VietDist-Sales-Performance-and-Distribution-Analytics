@@ -289,3 +289,17 @@ plan_version (2), region (3), team (9).
 | Mọi cột đang ở dạng chữ | Đổi kiểu: 3 cột ngày sang DATE, year, month, target_quantity, target_new_customers sang INTEGER, target_revenue sang NUMERIC |
 | 8 nhân viên nghỉ việc vẫn có chỉ tiêu v1 cho tháng 7 đến 12 | Quy tắc "tháng 7 đến 12 dùng v2" bỏ chỉ tiêu nửa cuối năm của họ. Hợp lý vì họ đã nghỉ (resign_date từ 24/05 đến 18/06). Đã xử lý ở stg_sales_targets_versioned (Task 2.3) |
 | Area Manager không có chỉ tiêu | Đúng nghiệp vụ (cấp quản lý). Khi tính thực tế so với chỉ tiêu, Area Manager sẽ không có dòng chỉ tiêu |
+
+## Quan sát từ Gold
+
+### Tỷ lệ hoàn thành chỉ tiêu khoảng 50% ở mọi tháng
+
+Từ `dwh.mart_sales_vs_target` (chỉ tiêu hiện hành, nhân viên còn làm việc): % hoàn thành của toàn công ty dao động từ 47% đến 51% ở cả 12 tháng 2024, tức chỉ tiêu xấp xỉ gấp đôi doanh thu thuần (đơn Delivered trừ hàng trả Đã xử lý).
+
+Logic tính đã được kiểm tra: tổng doanh thu thuần của mart khớp tuyệt đối với `fact_sales` trừ `fact_returns`. Tỷ lệ đều đặn như vậy nhiều khả năng là đặc điểm của bộ dữ liệu (chỉ tiêu được đặt theo một cách tính khác với doanh thu thuần đã giao), không phải lỗi pipeline.
+
+Lưu ý cho dashboard: với ngưỡng "đạt" là 100%, gần như mọi nhân viên sẽ hiển thị màu đỏ. Nên trình bày thêm so sánh tương đối (xếp hạng, xu hướng) thay vì chỉ dựa vào màu đạt hoặc không đạt.
+
+### Hàng trả của nhân viên đã nghỉ việc
+
+6 nhân viên nghỉ việc có phiếu trả hàng trong tháng 7 từ đơn cũ, không có chỉ tiêu hiện hành. Mart giữ các khoản này ở dòng không có `plan_version` (doanh thu thuần âm, tổng khoảng −3,3 triệu đồng) để tổng công ty vẫn trừ đúng.

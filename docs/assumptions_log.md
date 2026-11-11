@@ -89,4 +89,5 @@ Các yêu cầu dưới đây không làm được hoặc chỉ làm được m�
 | L-08 | Kế hoạch v3 và các phiên bản sau | Chưa có dữ liệu | Logic A-06 tự xử lý khi có phiên bản mới |
 | L-09 | Ghi lại người thực hiện thay đổi kế hoạch (BRD 5.3) | Nguồn không có thông tin người thay đổi | Chỉ có `version_date` và thời điểm nạp (`_ingested_at`, `raw.sales_target_files`) |
 | L-10 | Fill Rate theo đúng nghĩa "đúng hạn và đúng số" | Không dòng nào giao đủ 100% | Dùng định nghĩa A-17 |
+| L-12 | Giá vốn và biên lợi nhuận tại thời điểm bán | Nguồn chỉ có giá vốn hiện tại (product_master), không có lịch sử giá vốn | `fact_sales.cost_amount` = số lượng nhân giá vốn hiện tại. Biên lợi nhuận theo thời gian có thể lệch nếu giá vốn đã đổi trong năm |
 | L-11 | Đọc file XLSB, XLSM và nguồn trên OneDrive | Bộ dữ liệu chỉ có CSV và XLSX trên Google Drive | Code đọc XLSB, XLSM có sẵn nhưng chưa thử với file thật. Chưa viết kết nối OneDrive |

@@ -60,7 +60,7 @@ Cột "Căn cứ" ghi nguồn của giả định: **BRD**, **Đề bài**, **D�
 | ID | Giả định | Căn cứ |
 |---|---|---|
 | A-19 | `promotion_program` khử trùng theo `promotion_id` (Bronze đang có 80 dòng do nạp 2 lần) | Dữ liệu |
-| A-20 | Một dòng bán hàng thuộc chương trình KM nếu: `order_date` nằm trong khoảng `start_date` đến `end_date`, `product_id` có trong `applicable_products`, kênh và vùng khớp (giá trị `All` khớp mọi kênh, mọi vùng). Một dòng có thể thuộc nhiều chương trình, nên dùng bảng cầu (promotion_id, product_id) | BRD 3.3, 4.4: một sản phẩm thuộc nhiều KM cùng lúc |
+| A-20 | Một dòng bán hàng thuộc chương trình KM nếu: `order_date` nằm trong khoảng `start_date` đến `end_date`, `product_id` có trong `applicable_products`, kênh và vùng khớp (giá trị `All` khớp mọi kênh, mọi vùng). Một dòng có thể thuộc nhiều chương trình. Danh sách sản phẩm của mỗi chương trình được tách thành cột mảng `applicable_product_ids` trong `stg_promotion_program` (không tạo bảng riêng), và dàn ra bằng `unnest` khi cần | BRD 3.3, 4.4: một sản phẩm thuộc nhiều KM cùng lúc |
 | A-21 | ROI sơ bộ = (doanh thu trong kỳ KM – doanh thu kỳ ngay trước có cùng số ngày, cùng sản phẩm áp dụng) / `actual_cost_vnd`. Không tính cho chương trình `Planned` | BRD 4.4: so với trước kỳ KM. `actual_cost_vnd` có sẵn (trả lời một phần OQ-10) |
 
 ### Lịch

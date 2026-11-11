@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Phase 0, Phase 1 (Bronze, all 10 sources loaded), and Task 2.1 (profiling) are done; Silver and Gold are not built yet. Profiling queries are in `02_sql_analytics/data_profiling/raw.<table>.sql`, and findings plus open business questions are in `docs/data_issues.md`; read it before building Silver. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
+Phase 0, Phase 1 (Bronze, all 10 sources loaded), Task 2.1 (profiling), and Task 2.2 (10 Silver tables, all tests passing) are done; Task 2.3 (target versioning) and Gold are not built yet. Profiling queries are in `02_sql_analytics/data_profiling/raw.<table>.sql`, and findings plus open business questions are in `docs/data_issues.md`; read it before building Silver. The main reference is `02_VietDist_Project_Description_v2.0_Đề bài.docx` (in Vietnamese). The sections below describe the system that brief specifies, most of which does not exist yet. The folder is a local git repository; the brief also expects one on GitHub, which does not exist yet. Replace this section as code lands.
 
 Tool versions: the project accepts the latest versions rather than the exact ones in the brief. This machine has Python 3.13 and PostgreSQL 18.
 
@@ -54,7 +54,14 @@ cd 01_ingestion\loaders
 python load_sales_transactions.py
 ```
 
-There is no build, lint, or test framework defined. Data quality tests are SQL scripts (`not_null` + `unique` on each primary key), with a target of 0 failures.
+There is no build, lint, or test framework. Silver is plain SQL: each `02_sql_analytics/silver/stg_<table>.sql` drops and rebuilds `staging.stg_<table>` from `raw.<table>` (dedup with `ROW_NUMBER` keeping the latest `_ingested_at`, cast types, primary key). Each `02_sql_analytics/silver/tests/test_stg_<table>.sql` is one `SELECT` returning one row per test with `so_loi`; 0 means pass, and the target is 0 failures.
+
+```powershell
+psql -U postgres -d vietdist_dw1 -f 02_sql_analytics/silver/stg_customers.sql
+psql -U postgres -d vietdist_dw1 -f 02_sql_analytics/silver/tests/test_stg_customers.sql
+```
+
+Build order matters because some tests check `relationships` against other Silver tables: build `stg_sales_transactions` before `stg_return_transactions`; `stg_customers` and `stg_employees` before `stg_territory_mapping` and `stg_sales_targets`; `stg_products` before `stg_promotion_program`.
 
 `.env` holds `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `GOOGLE_SERVICE_ACCOUNT_JSON` (default `./credentials/gdrive_service_account.json`). Both `.env` and `credentials/` must be in `.gitignore`.
 

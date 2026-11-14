@@ -75,6 +75,12 @@ Cột "Căn cứ" ghi nguồn của giả định: **BRD**, **Đề bài**, **D�
 | A-22 | Năm tài chính từ 01/09 đến 31/08, đặt tên theo năm bắt đầu (FY2023 = 2023-09-01 đến 2024-08-31). `dim_date` có cả năm dương lịch và năm tài chính | BRD 3.1 (làm rõ), Đề bài checkpoint Task 3.1 |
 | A-23 | `dim_date` phủ 2022 đến 2026 theo đề bài, dù dữ liệu chỉ có 2024 | Đề bài checkpoint Task 3.1 |
 
+### Phân quyền (Row-Level Security)
+
+| ID | Giả định | Căn cứ |
+|---|---|---|
+| A-29 | Role lọc trên `dim_employees` (lan xuống dữ liệu Branch A) và `dim_distributors` (lan xuống Branch B). Ban Giám đốc không lọc. Giám đốc Vùng lọc cả nhân viên và nhà phân phối theo vùng. Trưởng nhóm lọc `team`, nhân viên Sales lọc `employee_id`, cả hai không thấy dữ liệu nhà phân phối. Quản lý nhà phân phối lọc `assigned_supervisor_id`, không thấy dữ liệu nhân viên. Vùng của nhân viên theo giai đoạn SCD2, nên giám đốc chỉ thấy doanh số làm ra khi nhân viên còn thuộc vùng mình | BRD 5.2. Lựa chọn: tách Branch A và B theo trách nhiệm của từng cấp |
+
 ## Hạn chế
 
 Các yêu cầu dưới đây không làm được hoặc chỉ làm được một phần với dữ liệu hiện có. Mô hình được thiết kế để làm được khi có thêm dữ liệu.
@@ -97,3 +103,4 @@ Các yêu cầu dưới đây không làm được hoặc chỉ làm được m�
 | L-14 | Dự báo cuối tháng, cuối quý sẽ đạt bao nhiêu phần trăm (BR-A-01) | Ngày tham chiếu là 2024-12-31 (A-05), mọi tháng và quý đã kết thúc nên không còn kỳ nào để dự báo | Bỏ qua. Trang ghi chú lý do |
 | L-15 | Lịch sử nhân viên "từ khi vào đến nay" (BR-A-04) | Nguồn chỉ có 2 ảnh chụp (đầu năm và 01/07/2024) và không có bán hàng trước 2024, trong khi nhân viên vào làm từ 2010 | Hiện `join_date`. Lịch sử vùng, nhóm và doanh thu chỉ bắt đầu từ 01/01/2024 |
 | L-16 | Xem đơn nhà phân phối theo ngày, theo tuần (BR-B-01) | Gold theo đề bài chỉ có `mart_distributor_performance` theo tháng, không có fact đơn nhà phân phối theo ngày | Chỉ xem theo tháng và quý. Dữ liệu theo ngày vẫn có ở `staging.stg_distributor_orders` |
+| L-17 | Phân quyền tự động theo người đăng nhập (`USERPRINCIPALNAME()`, BRD 5.2) | Gold không có email nhân viên, và Power BI Desktop không có người đăng nhập thật | Tạo role tĩnh: 1 role Ban Giám đốc, 3 role Giám đốc Vùng và 1 role mẫu cho mỗi cấp còn lại. Khi lên Power BI Service thì gán email vào role, hoặc bổ sung bảng ánh xạ email để dùng role động |

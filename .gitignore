@@ -9,3 +9,6 @@ __pycache__/
 
 # File khoa tam cua Excel/Word
 ~$*
+
+# File Power BI (chua du lieu)
+*.pbix

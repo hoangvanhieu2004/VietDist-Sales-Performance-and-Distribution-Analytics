@@ -12,3 +12,10 @@ __pycache__/
 
 # File Power BI (chua du lieu)
 *.pbix
+
+# Tai lieu noi bo (de bai va BRD), khong dua len Git
+BRD_VietDist_Analytics_Project_*.docx
+02_VietDist_Project_Description_*.docx
+
+# Huong dan cho Claude Code, chi dung tren may
+CLAUDE.md
